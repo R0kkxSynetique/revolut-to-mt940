@@ -80,7 +80,7 @@ class Mt940Writer:
 
 
 
-CURRENCY = 'EUR'
+CURRENCY = 'CHF'
 
 # format identifier
 TAG_940 = '940'
@@ -95,7 +95,7 @@ FORMAT_HEADER = \
 FORMAT_20 = ':20:{bank}\n'
 
 # account id
-FORMAT_25 = ':25:{iban} {currency}\n'
+FORMAT_25 = ':25:{iban}\n'
 
 # sequence no
 FORMAT_28 = ':28:{seqno}\n'
@@ -110,7 +110,7 @@ FORMAT_62F = ':62F:{sign}{date}{currency}{amount}\n'
 FORMAT_61 = ':61:{date}{date2}{amount}{magic}\n'
 
 # transaction 2
-FORMAT_86 = ':86:/IBAN/{iban}/NAME/{name}/REMI/{description}\n'
+FORMAT_86 = ':86:{name} - {description}\n'
 
 MAGIC = 'NTRFNONREF'
 

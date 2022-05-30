@@ -4,36 +4,29 @@ from revolut import RevolutCsvReader
 from mt940 import Mt940Writer
 
 
+INPUTFILE = 'C:/Users/benja/Documents/GitHub/revolut-to-mt940/Input/input.csv'
+OUTPUTFILE = 'C:/Users/benja/Documents/GitHub/revolut-to-mt940/Output/output.940'
+
+IBAN = 'GB06 REVO 0099 6937 2376 70'
+
 def main():
-    parser = argparse.ArgumentParser(
-        prog='oddity-revolut-to-mt940',
-        description='Convert Revolut CSV-files to MT940 format.')
 
-    parser.add_argument('--in',
-                        dest='input_file',
-                        help='path to Revolut csv-file',
-                        required=True)
+    with open('./Input/input.csv', 'r') as f:
+        text = f.read()
 
-    parser.add_argument('--account-iban',
-                        dest='account_iban',
-                        help='Revolut account IBAN',
-                        required=True)
+        converted_text = text.replace('""', '"')
 
-    parser.add_argument('--out',
-                        dest='output_file',
-                        help='path to MT940 output path',
-                        required=True)
+    with open('./Input/input.csv', 'w') as f:
+        f.write(converted_text)
 
-    args = parser.parse_args()
+    reader = RevolutCsvReader(INPUTFILE)
 
-    reader = RevolutCsvReader(args.input_file)
-
-    with Mt940Writer(args.output_file, args.account_iban) as writer:
+    with Mt940Writer(OUTPUTFILE, IBAN) as writer:
         transactions = reader.get_all_transactions()
         for transaction in transactions:
             writer.write_transaction(transaction)
 
-        print('Wrote {} transactions to file: {}.'.format(len(transactions), args.output_file))
+        print('Wrote {} transactions to file: {}.'.format(len(transactions), OUTPUTFILE))
 
 
 if __name__ == "__main__":
