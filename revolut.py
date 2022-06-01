@@ -89,12 +89,11 @@ class RevolutCsvReader:
 
         if description.startswith("Paiement"):
             shortdesc = description[39:]
-
+            to = shortdesc
             shortdesc = "Pmt " + shortdesc
         else:
             shortdesc = description
 
-        # completed_datetime = _parse_datetime(completed_date_str, completed_time_str)
         completed_datetime = _parse_datetime(completed_date_str, "12:00:00")
         amount, fee, balance = float(amount_str), float(fee_str), float(balance_str)
 
@@ -105,7 +104,8 @@ class RevolutCsvReader:
             description=shortdesc,
             datetime=completed_datetime,
             before_balance=balance - amount - fee,
-            after_balance=balance - fee)
+            after_balance=balance - fee,
+            to=to)
 
         batch = [transaction_without_fee]
 
@@ -113,14 +113,15 @@ class RevolutCsvReader:
             fee_transaction = self._make_fee_transaction(
                 completed_datetime,
                 balance,
-                fee)
+                fee,
+                to)
 
             batch.append(fee_transaction)
 
         return batch
 
 
-    def _make_fee_transaction(self, completed_datetime, balance, fee):
+    def _make_fee_transaction(self, completed_datetime, balance, fee, to):
         return Transaction(
             amount=fee,
             name=FEE_NAME,
@@ -130,5 +131,6 @@ class RevolutCsvReader:
             description=FEE_DESCRIPTION_FORMAT.format(int(completed_datetime.timestamp())),
             datetime=completed_datetime + FEE_DATETIME_DELTA,
             before_balance=balance - fee,
-            after_balance=balance)
+            after_balance=balance,
+            to=to)
 

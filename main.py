@@ -4,8 +4,8 @@ from revolut import RevolutCsvReader
 from mt940 import Mt940Writer
 
 
-INPUTFILE = 'C:/Users/benja/Documents/GitHub/revolut-to-mt940/Input/input.csv'
-OUTPUTFILE = 'C:/Users/benja/Documents/GitHub/revolut-to-mt940/Output/output.940'
+INPUTFILE = './Input/input.csv'
+OUTPUTFILE = './Output/output.940'
 
 IBAN = 'GB06 REVO 0099 6937 2376 70'
 
