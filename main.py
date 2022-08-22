@@ -4,19 +4,24 @@ from revolut import RevolutCsvReader
 from mt940 import Mt940Writer
 
 
-INPUTFILE = 'C:/Users/benja/Documents/GitHub/revolut-to-mt940/Input/input.csv'
-OUTPUTFILE = 'C:/Users/benja/Documents/GitHub/revolut-to-mt940/Output/output.940'
+INPUTNAMEFILE = "monthly-statement_01-Jun-2022_30-Jun-2022"
+INPUTEXT = ".csv"
+OUTPUTEXT = ".940"
+
+INPUTFILE = './Input/' + INPUTNAMEFILE + INPUTEXT
+OUTPUTFILE = './Output/' + INPUTNAMEFILE + OUTPUTEXT
 
 IBAN = 'GB06 REVO 0099 6937 2376 70'
 
+
 def main():
 
-    with open('./Input/input.csv', 'r') as f:
+    with open(INPUTFILE, 'r') as f:
         text = f.read()
 
         converted_text = text.replace('""', '"')
 
-    with open('./Input/input.csv', 'w') as f:
+    with open(INPUTFILE, 'w') as f:
         f.write(converted_text)
 
     reader = RevolutCsvReader(INPUTFILE)

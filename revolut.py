@@ -82,17 +82,9 @@ class RevolutCsvReader:
         def _parse_datetime(date_str, time_str):
             return datetime.strptime(date_str + time_str, DATETIME_FORMAT)
 
-        try:
-            _1, completed_date_str, _3, _4, _5, _6, description, _8, name, cardnumber, original_currency, original_amount_str, currency, amount_str, fee_str, balance_str, _17, _18, _19, _20, _21   = row
-        except:
-            print("error: ", row)
-
-        if description.startswith("Paiement"):
-            shortdesc = description[39:]
-
-            shortdesc = "Pmt " + shortdesc
-        else:
-            shortdesc = description
+        
+        started_date_str, completed_date_str, _3, _4, transaction_id, transaction_type, description, Reference, name, cardnumber, original_currency, original_amount_str, currency, amount_str, fee_str, balance_str, account, _18, _19, _20, _21   = row
+        
 
         # completed_datetime = _parse_datetime(completed_date_str, completed_time_str)
         completed_datetime = _parse_datetime(completed_date_str, "12:00:00")
@@ -102,7 +94,7 @@ class RevolutCsvReader:
             amount=amount,
             name=_santize_name(name),
             iban="GB06 REVO 0099 6937 2376 70",
-            description=shortdesc,
+            description=description,
             datetime=completed_datetime,
             before_balance=balance - amount - fee,
             after_balance=balance - fee)
