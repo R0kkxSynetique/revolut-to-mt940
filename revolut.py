@@ -82,11 +82,8 @@ class RevolutCsvReader:
         def _parse_datetime(date_str, time_str):
             return datetime.strptime(date_str + time_str, DATETIME_FORMAT)
 
-        
         started_date_str, completed_date_str, _3, _4, transaction_id, transaction_type, description, Reference, name, cardnumber, original_currency, original_amount_str, currency, amount_str, fee_str, balance_str, account, _18, _19, _20, _21   = row
-        
 
-        # completed_datetime = _parse_datetime(completed_date_str, completed_time_str)
         completed_datetime = _parse_datetime(completed_date_str, "12:00:00")
         amount, fee, balance = float(amount_str), float(fee_str), float(balance_str)
 
@@ -97,7 +94,8 @@ class RevolutCsvReader:
             description=description,
             datetime=completed_datetime,
             before_balance=balance - amount - fee,
-            after_balance=balance - fee)
+            after_balance=balance - fee,
+            to=to)
 
         batch = [transaction_without_fee]
 
@@ -105,14 +103,15 @@ class RevolutCsvReader:
             fee_transaction = self._make_fee_transaction(
                 completed_datetime,
                 balance,
-                fee)
+                fee,
+                to)
 
             batch.append(fee_transaction)
 
         return batch
 
 
-    def _make_fee_transaction(self, completed_datetime, balance, fee):
+    def _make_fee_transaction(self, completed_datetime, balance, fee, to):
         return Transaction(
             amount=fee,
             name=FEE_NAME,
@@ -122,5 +121,6 @@ class RevolutCsvReader:
             description=FEE_DESCRIPTION_FORMAT.format(int(completed_datetime.timestamp())),
             datetime=completed_datetime + FEE_DATETIME_DELTA,
             before_balance=balance - fee,
-            after_balance=balance)
+            after_balance=balance,
+            to=to)
 

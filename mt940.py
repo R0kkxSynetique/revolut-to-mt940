@@ -36,7 +36,9 @@ class Mt940Writer:
         self.file.writelines([
             Mt940.make_61(
                 transaction.datetime,
-                transaction.amount),
+                transaction.amount,
+                transaction.name,
+                transaction.to),
             Mt940.make_86(
                 transaction.iban,
                 transaction.name,
@@ -107,7 +109,7 @@ FORMAT_60F = ':60F:{sign}{date}{currency}{amount}\n'
 FORMAT_62F = ':62F:{sign}{date}{currency}{amount}\n'
 
 # transaction
-FORMAT_61 = ':61:{date}{date2}{amount}{magic}\n'
+FORMAT_61 = ':61:{date}{date2}{amount}{name} {to}\n'
 
 # transaction 2
 FORMAT_86 = ':86:{name} - {description}\n'
@@ -155,12 +157,13 @@ class Mt940:
             amount= Mt940.amount_val(balance))
 
     @staticmethod
-    def make_61(datetime, amount):
+    def make_61(datetime, amount, name, to):
         return FORMAT_61.format(
             date=Mt940.date(datetime),
             date2=Mt940.date(datetime, with_year=False),
             amount=Mt940.amount(amount),
-            magic=MAGIC)
+            name=name,
+            to=to)
 
     @staticmethod
     def make_86(iban, name, description):
