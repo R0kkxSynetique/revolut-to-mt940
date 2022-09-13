@@ -94,8 +94,7 @@ class RevolutCsvReader:
             description=description,
             datetime=completed_datetime,
             before_balance=balance - amount - fee,
-            after_balance=balance - fee,
-            to=to)
+            after_balance=balance - fee)
 
         batch = [transaction_without_fee]
 
@@ -103,15 +102,14 @@ class RevolutCsvReader:
             fee_transaction = self._make_fee_transaction(
                 completed_datetime,
                 balance,
-                fee,
-                to)
+                fee)
 
             batch.append(fee_transaction)
 
         return batch
 
 
-    def _make_fee_transaction(self, completed_datetime, balance, fee, to):
+    def _make_fee_transaction(self, completed_datetime, balance, fee):
         return Transaction(
             amount=fee,
             name=FEE_NAME,
@@ -121,6 +119,5 @@ class RevolutCsvReader:
             description=FEE_DESCRIPTION_FORMAT.format(int(completed_datetime.timestamp())),
             datetime=completed_datetime + FEE_DATETIME_DELTA,
             before_balance=balance - fee,
-            after_balance=balance,
-            to=to)
+            after_balance=balance)
 

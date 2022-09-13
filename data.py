@@ -8,6 +8,5 @@ Transaction = namedtuple(
         'description',
         'datetime',
         'after_balance',
-        'before_balance',
-        'to'
+        'before_balance'
     ])
